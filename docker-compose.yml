@@ -1,11 +1,14 @@
+# Docker Compose definition for running a wordpress site
+
 version: '3'
 
 services:
    db:
      image: mysql:5.7
      volumes:
-       - db_data:/var/lib/mysql
+         - ./db_data:/var/lib/mysql
      restart: always
+     user: root:root
      environment:
        MYSQL_ROOT_PASSWORD: somewordpress
        MYSQL_DATABASE: wordpress
@@ -16,12 +19,15 @@ services:
      depends_on:
        - db
      image: wordpress:latest
+     volumes:
+         - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+         - ./website:/var/www/html
      ports:
-       - "8000:80"
+       - "80:80"
      restart: always
+     user: root:root
      environment:
        WORDPRESS_DB_HOST: db:3306
        WORDPRESS_DB_USER: wordpress
        WORDPRESS_DB_PASSWORD: wordpress
-volumes:
-    db_data:
+
